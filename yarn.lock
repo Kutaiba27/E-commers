@@ -1204,6 +1204,11 @@
   "resolved" "https://registry.npmjs.org/negotiator/-/negotiator-0.6.3.tgz"
   "version" "0.6.3"
 
+"nodemailer@^6.9.8":
+  "integrity" "sha512-cfrYUk16e67Ks051i4CntM9kshRYei1/o/Gi8K1d+R34OIs21xdFnW7Pt7EucmVKA0LKtqUGNcjMZ7ehjl49mQ=="
+  "resolved" "https://registry.npmjs.org/nodemailer/-/nodemailer-6.9.8.tgz"
+  "version" "6.9.8"
+
 "nodemon@^3.0.2":
   "integrity" "sha512-9qIN2LNTrEzpOPBaWHTm4Asy1LxXLSickZStAQ4IZe7zsoIpD/A7LWxhZV3t4Zu352uBcqVnRsDXSMR2Sc3lTA=="
   "resolved" "https://registry.npmjs.org/nodemon/-/nodemon-3.0.2.tgz"

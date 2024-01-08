@@ -1,11 +1,26 @@
 import { Router } from "express";
 
-import { signUp, logIn, protect } from '../services/authServices.js'
-import { signUserValidator, loginUserValidator } from "../utility/validators/authValidation.js";
+import {
+   signUp,
+   logIn,
+   forgetPassword,
+   verifyResetPasswordCode,
+   setNewPassword,
+   logOut,
+   protect
+} from '../services/authServices.js'
+
+import {
+   signUserValidator,
+   loginUserValidator
+} from "../utility/validators/authValidation.js";
 const router = Router();
 
-router.route('/signup').post(signUserValidator,signUp)
-router.route('/login').post(loginUserValidator,logIn)
-router.route('/protect').post(protect)
+router.post('/signup', signUserValidator, signUp)
+router.post('/login', loginUserValidator, logIn)
+router.post('/forgetpassword', forgetPassword)
+router.post('/veriryresetcode', verifyResetPasswordCode)
+router.put('/setnewpassword', setNewPassword)
+router.get('/logOut',protect, logOut)
 
-export { router as AuthRouter}
+export { router as AuthRouter }

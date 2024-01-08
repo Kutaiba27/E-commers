@@ -9,7 +9,7 @@ import {
    resizingUserImage,
    updateUser,
    uploadUserImages,
-   changePassword
+   changePassword,
 } from "../services/userServices.js"
 
 import {
@@ -27,7 +27,11 @@ const router = Router({ mergeParams: true });
 router.put('/changePassword/:id',changUserPasswordValidator,changePassword)
 
 router.route('/')
-   .get(getUsers)
+   .get(
+      protect,
+      allowTo("admin","maneger"),
+      getUsers
+      )
    .post(
       protect,
 		allowTo('manger'),
@@ -35,6 +39,11 @@ router.route('/')
       resizingUserImage,
       createUserValidator, 
       createUser
+      )
+   .delete(
+      protect, 
+      allowTo('manger'), 
+      deleteUser
       );
 
 router.route('/:id')
@@ -51,12 +60,6 @@ router.route('/:id')
       resizingUserImage, 
       updateUserValidator, 
       updateUser
-      )
-   .delete(
-      protect,
-		allowTo('manger'),
-      deleteUserValidator, 
-      deleteUser
       );
 
 export { router as UserRouter };

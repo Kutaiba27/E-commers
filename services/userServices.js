@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs'
 import { uploadSingleImage } from '../middlewares/uploadImageMiddlewares.js'
 import { ApiError } from '../utility/apiError.js'
 import { UserModel } from "../models/userModel.js" 
-import { deleteItem, createItem, getItem, getAll } from './handerFactory.js'
+import { createItem, getItem, getAll } from './handerFactory.js'
 
 export const uploadUserImages = uploadSingleImage("profileImage")
 
@@ -66,5 +66,13 @@ export const changePassword = asyncHandler( async (req, res, next)=>{
    res.status(201).json({message: "Password Updated Successfully"})
 })
 
-export const deleteUser = deleteItem(UserModel)
+export const deleteUser = asyncHandler(async(req,res)=>{
+   const result = await UserModel.deleteOne({email:req.body.email})
+   if(!result){
+      throw new ApiError("invalit email for delete user", 404 )
+   }
+   res.status(200).json({message:"delete done successfully"})
+})
+
+
 

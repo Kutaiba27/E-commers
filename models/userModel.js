@@ -29,6 +29,9 @@ const userSchema = new Schema({
       type: Date,
       default: Date.now()
    },
+   resetPasswordHash: String,
+   resetPasswordExpiration: Date,
+   resetPasswordVerification: Boolean,
    role: {
       type: String,
       enum: ["admin", "user"],
