@@ -35,16 +35,21 @@ export const logIn = asyncHandler( async (req, res, next) => {
    res.status(201).json({user: user, token: token})
 }) 
 
+export const logOut = asyncHandler(async (req, res)=>{
+
+   res.status(204).setHeader("authorization", "").json()
+})
+
 export const protect = asyncHandler( async (req, res,next)=>{
    
-   let token;
+   let token ;
+
    if( req.headers['authorization'] || (req.headers['authorization'].startsWith('bearer'))){
       token = req.headers['authorization'].split(' ')[1]
    }
-   if( !token ){
+   if( !token || token == "null"){
       return next(new Error('you not logedin please login first and try again'),401);
-   }
-   console.log(token)
+   }   
    const decoded = jwt.verify(token, process.env.SECRET_KEY)
    const user = await UserModel.findById(decoded.userId)
    if( !user ){
@@ -139,9 +144,4 @@ export const setNewPassword = asyncHandler( async (req, res)=> {
    const token = generateToken(user.email, user.id)
    res.status(200).json({status: "successfuly", message:"change password successfully please login ", token})
 
-})
-
-export const logOut = asyncHandler(async (req, res)=>{
-
-   res.status(204).json({jwt:""})
 })

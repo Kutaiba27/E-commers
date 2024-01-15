@@ -42,7 +42,7 @@ export const createProduct = createItem(ProductModel)
 
 export const getProdects = getAll(ProductModel, "Product")
 
-export const getProduct = getItem(ProductModel)
+export const getProduct = getItem(ProductModel, {path: "reviews"})
 
 export const updateProduct = updateItem(ProductModel)
 

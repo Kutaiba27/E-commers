@@ -62,15 +62,25 @@ const ProductShcema = Schema({
    ratingsAverage: {
       type: Number,
       min: [0, "Rating Must be above Or equal 0"],
-      max: [5, "Rating Must be below or equal 5"]
+      max: [5, "Rating Must be below or equal 5"],
+      default: 0
    },
    ratingsQuantity: {
       type: Number,
       default: 0
    }
-},
-   { timestamp: true }
+}, {
+      timestamp: true,
+      toJSON : { virtuals: true },
+      toObject: { virtuals: true}
+   }
 )
+
+ProductShcema.virtual("reviews", {
+   ref: "Review",
+   foreignField: "product",
+   localField: "_id"
+})
 
 const setProdactImage = (doc)=>{
    if(doc.imageCovered){

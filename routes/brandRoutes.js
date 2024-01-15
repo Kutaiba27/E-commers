@@ -23,7 +23,7 @@ import { protect, allowTo } from "../services/authServices.js";
 const router = Router({ mergeParams: true });
 
 router.route('/')
-   .get(getBrands)
+   .get(protect, getBrands)
    .post(
       protect,
       allowTo('admin', 'manger'),
