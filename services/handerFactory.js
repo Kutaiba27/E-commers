@@ -6,10 +6,11 @@ import { ApiFeatures } from '../utility/apiFeatures.js';
 
 const deleteItem = (Model)=> asyncHandler( async (req, res, next)=>{
    const { id } = req.params;
-   const result = await Model.deleteOne({_id:id});
+   const result = await Model.findOneAndDelete({_id:id});
    if(!result){
       return next(new ApiError(`There Are No SubCategory For This Id: ${id}`,400));
    }
+   result.remove();
    res.status(200).json({message: `Delete SubCategory Successfully`});
 })
 
@@ -23,6 +24,7 @@ const updateItem = (Model)=> asyncHandler(async (req, res, next) => {
    if (!document) {
       return next(new ApiError("There Are Problem Or This item Is Not Exist", 400))
    }
+   document.save();
    res.status(200).json({ data: document });
 })
 
@@ -31,9 +33,13 @@ const createItem = (Model)=> asyncHandler(async (req, res) => {
    res.status(201).json({ date: newDoc });
 });
 
-const getItem = (Model)=> asyncHandler(async (req, res, next) => {
+const getItem = (Model, populateOpt)=> asyncHandler(async (req, res, next) => {
    const { id } = req.params;
-   const document = await Model.findById(id);
+   let query =  Model.findById(id);
+   if(populateOpt){
+      query = query.populate(populateOpt);
+   }
+   const document = await query;
    if (!document) {
       return next(new ApiError(`There is no category with id ${id}`, 404));
    }

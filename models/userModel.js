@@ -40,7 +40,21 @@ const userSchema = new Schema({
    active: {
       type: Boolean,
       default: true
-   }
+   },
+   wishlist: [{
+      type: Schema.ObjectId,
+      ref: "product"
+   }],
+   address:[
+      {
+         id:{ type : Schema.Types.ObjectId},
+         phone: String,
+         alise: String,
+         city: String,
+         details: String,
+         postalCode: String,
+      }
+   ]
 },{timeseries:true})
 
 userSchema.pre('save', async function(next){

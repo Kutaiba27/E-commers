@@ -5,7 +5,6 @@ import { UserModel } from "../../models/userModel.js";
 import { validatorMiddleware } from '../../middlewares/validatorMiddlewares.js'
 
 export const signUserValidator = [
-   // (req, res)=>{ console.log(req.body)},
    check('name')
       .notEmpty()
       .withMessage("The Name Is Required")
