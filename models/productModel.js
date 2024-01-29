@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import { Schema, model } from "mongoose";
 
-const ProductShcema = Schema({
+const ProductShcema = new Schema({
    title: {
       type: String,
       required: true,
@@ -110,6 +110,4 @@ ProductShcema.pre(/^find/, function (next){
    next()
 })
 
-const ProductModel = model("product", ProductShcema);
-
-export { ProductModel }
+export const ProductModel = model("product", ProductShcema);

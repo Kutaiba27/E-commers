@@ -9,7 +9,10 @@ import { ReviewRouter } from './reviewRoutes.js';
 import { WishListRouter } from './wishlistRoutes.js';
 import { AddressRouter } from './addressRoutes.js';
 import { CouponRouter } from './couponRoutes.js';
-
+import { CartRouter } from './cartRoutes.js';
+import { OrderRouter } from './orderRoutes.js'
+// import {ProductModel} from "../models/productModel.js";
+// import  data from "../utility/dummyData/products.json" assert { type: "json" };
 export const mountRoutes = (app)=>{
    app.use("/api/v1/categories", CategoryRouter);
    app.use("/api/v1/subcategories", SubCategoryRouter);
@@ -21,4 +24,14 @@ export const mountRoutes = (app)=>{
    app.use("/api/v1/wishlist",WishListRouter)
    app.use("/api/v1/address",AddressRouter);
    app.use("/api/v1/coupon", CouponRouter);
+   app.use("/api/v1/cart", CartRouter);
+   app.use("/api/v1/order", OrderRouter);
+   // app.post("/api/v1/insertPordect",async (req,res)=>{
+   //
+   //    const orders = await ProductModel.insertMany(data)
+   //    if(orders){
+   //    return res.status(200).json({staus:"successfully"})
+   //    }
+   //    res.status(404).json({staus:"Erroring"})
+   // })
 }
