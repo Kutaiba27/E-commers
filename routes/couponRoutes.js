@@ -10,7 +10,7 @@ import { allowTo, protect } from "../services/authServices.js";
 
 const router = Router();
 
-router.use(protect,allowTo('maneger',"admin"));
+router.use(protect,allowTo('user','maneger',"admin"));
 
 router.route('/')
    .get(getCoupons)

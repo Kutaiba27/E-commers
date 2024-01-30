@@ -6,12 +6,12 @@ import { ApiFeatures } from '../utility/apiFeatures.js';
 
 const deleteItem = (Model)=> asyncHandler( async (req, res, next)=>{
    const { id } = req.params;
-   const result = await Model.findOneAndDelete({_id:id});
+   const result = await Model.findOne({_id:id});
    if(!result){
-      return next(new ApiError(`There Are No SubCategory For This Id: ${id}`,400));
+      return next(new ApiError(`There Are No Item For This Id: ${id}`,400));
    }
-   result.remove();
-   res.status(200).json({message: `Delete SubCategory Successfully`});
+   await result.remove();
+   res.status(200).json({message: `Delete Item Successfully`});
 })
 
 const updateItem = (Model)=> asyncHandler(async (req, res, next) => {
