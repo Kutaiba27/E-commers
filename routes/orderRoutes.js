@@ -17,7 +17,7 @@ const router = Router()
 
 router.route('/checkout-session/:cartId').post(protect, allowTo('user'), checkoutSession)
 
-router.use(protect, allowTo("user","admin","manger"))
+// router.use(protect, allowTo("user","admin","manger"))
 
 router.route('/:cartId')
    .post(protect, allowTo("user"), createCashOrder)
