@@ -86,9 +86,6 @@ export const checkoutSession = asyncHandler(async (req, res) => {
    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
 
-   const strings = `${req.protocol}://${req.get('host')}/orders`
-   console.log(strings)
-
    const session = await stripe.checkout.sessions.create({
       line_items: [
          {
@@ -109,7 +106,6 @@ export const checkoutSession = asyncHandler(async (req, res) => {
       client_reference_id: req.params.cartId,
       metadata: req.body.shippingAddress,
    });
-
    res.status(200).json({ status: 'success', data: session })
 
 })
@@ -127,5 +123,6 @@ export const webhookCheckout = asyncHandler(async (req, res) => {
       console.log('created your order ')
       console.log(event.data.object.client_reference_id)
    }
+   console.log("theere is a problem")
 
 })
