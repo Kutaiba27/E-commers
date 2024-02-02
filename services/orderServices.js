@@ -9,7 +9,6 @@ import { ApiError } from '../utility/apiError.js';
 import { ProductModel } from '../models/productModel.js';
 import { getAll, getItem } from './handerFactory.js';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
 
 export const createCashOrder = asyncHandler(async (req, res) => {
@@ -76,6 +75,7 @@ export const updatePayOrder = asyncHandler(async (req, res) => {
 })
 
 export const checkoutSession = asyncHandler(async (req, res) => {
+   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
    let shippingPrice = 0, taxPrice = 0;
 
@@ -112,6 +112,8 @@ export const checkoutSession = asyncHandler(async (req, res) => {
 })
 
 export const webhookCheckout = asyncHandler(async (req, res) => {
+   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
    const sig = request.headers['stripe-signature'];
 
    let event;
