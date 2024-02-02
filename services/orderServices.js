@@ -108,6 +108,7 @@ export const checkoutSession = asyncHandler(async (req, res) => {
    });
    res.status(200).json({ status: 'success', data: session })
 
+
 })
 
 export const webhookCheckout = asyncHandler(async (req, res) => {
@@ -126,3 +127,4 @@ export const webhookCheckout = asyncHandler(async (req, res) => {
    console.log("theere is a problem")
 
 })
+
