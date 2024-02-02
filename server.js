@@ -21,7 +21,7 @@ const app = express();
 app.use(cors());
 app.options("*",cors());
 app.use(compression());
-app.use(express.json({limit: "20k"}));
+app.use(express.json({limit: "200k"}));
 app.use(express.static(path.join(dirname(fileURLToPath(import.meta.url)), '/uploads/')));
 
 if (process.env.NODE_ENV === "development") {
