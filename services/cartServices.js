@@ -35,7 +35,6 @@ export const addProductToCart = asyncHandler(async (req, res)=>{
       // cart.cartItems.push({product: product._id, color: color, price:product.price})
    }else {
       const productIndex = cart.cartItems.findIndex((item)=> item.product.toString() == productId && item.color.toString() == color)
-      console.log(productIndex)
       if( productIndex >= 0 ){
          cart.cartItems[productIndex].quantity += 1 ; 
       }else{

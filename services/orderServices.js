@@ -9,6 +9,8 @@ import { ApiError } from '../utility/apiError.js';
 import { ProductModel } from '../models/productModel.js';
 import { getAll, getItem } from './handerFactory.js';
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+
 
 export const createCashOrder = asyncHandler(async (req, res) => {
 
@@ -84,18 +86,13 @@ export const checkoutSession = asyncHandler(async (req, res) => {
    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
 
-   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
-
-   const strings = `${req.protocol}://${req.get('host')}/orders`
-   console.log(strings)
-
    const session = await stripe.checkout.sessions.create({
       line_items: [
          {
-            price_data:{
+            price_data: {
                unit_amount: totalOrderPrice * 100,
                currency: 'egp',
-               product_data:{
+               product_data: {
                   name: req.user.name,
                }
             },
@@ -108,9 +105,26 @@ export const checkoutSession = asyncHandler(async (req, res) => {
       customer_email: req.user.email,
       client_reference_id: req.params.cartId,
       metadata: req.body.shippingAddress,
-      // apiKey: process.env.STRIPE_SECRET_KEY
    });
-
    res.status(200).json({ status: 'success', data: session })
 
-}) 
+
+})
+
+export const webhookCheckout = asyncHandler(async (req, res) => {
+   const sig = request.headers['stripe-signature'];
+
+   let event;
+   try {
+      event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET);
+   } catch (err) {
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+   }
+   if( event.type == 'checkout.session.completed'){
+      console.log('created your order ')
+      console.log(event.data.object.client_reference_id)
+   }
+   console.log("theere is a problem")
+
+})
+

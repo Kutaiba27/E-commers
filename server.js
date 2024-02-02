@@ -11,6 +11,7 @@ import { mongoConnection } from './configuration/dbConnection.js';
 import { ApiError } from "./utility/apiError.js";
 import { globalError } from "./middlewares/errorMiddlewares.js";
 import { mountRoutes } from './routes/index.js';
+import { webhookCheckout } from './services/orderServices.js'
 
 
 dotenv.config({ path: 'config.env' });
@@ -20,12 +21,14 @@ const app = express();
 app.use(cors());
 app.options("*",cors());
 app.use(compression());
-app.use(express.json());
+app.use(express.json({limit: "20k"}));
 app.use(express.static(path.join(dirname(fileURLToPath(import.meta.url)), '/uploads/')));
 
 if (process.env.NODE_ENV === "development") {
    app.use(morgan("dev"));
 }
+
+app.use('/webhook-checkout',express.raw({type: 'application/json'}),webhookCheckout)
 
 mountRoutes(app)
 

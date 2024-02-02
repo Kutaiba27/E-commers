@@ -15,12 +15,12 @@ import { protect, allowTo } from "../services/authServices.js";
 
 const router = Router()
 
-router.route('/checkout-session/:cartId').post(protect, allowTo('user'), checkoutSession)
+router.route('/checkout-session/:cartId').post(/*protect, allowTo('user'),*/ checkoutSession)
 
-router.use(protect, allowTo("user","admin","manger"))
+// router.use(protect, allowTo("user","admin","manger"))
 
 router.route('/:cartId')
-   .post(protect, allowTo("user"), createCashOrder)
+   .post(/*protect, allowTo("user"),*/ createCashOrder)
 
 router.route('/')
    .get(filterOrderOr, getAllOrders )
