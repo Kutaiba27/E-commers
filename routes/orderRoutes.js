@@ -15,7 +15,7 @@ import { protect, allowTo } from "../services/authServices.js";
 
 const router = Router()
 
-router.route('/checkout-session/:cartId').post(/*protect, allowTo('user'),*/ checkoutSession)
+router.route('/checkout-session/:cartId').post(protect,/* allowTo('user'),*/ checkoutSession)
 
 // router.use(protect, allowTo("user","admin","manger"))
 
