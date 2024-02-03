@@ -28,7 +28,7 @@ if (process.env.NODE_ENV === "development") {
    app.use(morgan("dev"));
 }
 
-app.post('/webhook-checkout',express.raw({type: 'application/json'}),webhookCheckout)
+app.post('/webhook-checkout',(req,res)=>{console.log("dkjkdj")},express.raw({type: 'application/json'}),webhookCheckout)
 
 mountRoutes(app)
 
