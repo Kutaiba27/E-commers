@@ -6,10 +6,10 @@ export const addProductToWishList = asyncHandler(async (req, res) => {
       {
          $addToSet: { wishlist: req.body.product }
       },
-      { new: true }
+      {new: true}
    )
    res.status(200).json({
-      status: "successfull",
+      status: "successfully",
       message: "Product Add To WishList ",
       wishlist: user.wishlist
    })
