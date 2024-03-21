@@ -3,6 +3,7 @@
 import { Stripe } from 'stripe'
 import asyncHandler from 'express-async-handler'
 
+import { UserModel } from '../models/userModel.js'
 import { CartModel } from '../models/cartModel.js';
 import { OrderModel } from '../models/orderModel.js';
 import { ApiError } from '../utility/apiError.js';
@@ -85,7 +86,6 @@ export const checkoutSession = asyncHandler(async (req, res) => {
    }
    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
-
    const session = await stripe.checkout.sessions.create({
       line_items: [
          {
@@ -113,11 +113,11 @@ const createCardOrder = async (session) => {
    const shippingAddress = session.metadata;
    const oderPrice = session.amount_total / 100;
 
-   const cart = await Cart.findById(cartId);
-   const user = await User.findOne({ email: session.customer_email });
+   const cart = await CartModel.findById(cartId);
+   const user = await UserModel.findOne({ email: session.customer_email });
 
    // 3) Create order with default paymentMethodType card
-   const order = await Order.create({
+   const order = await OrderModel.create({
       user: user._id,
       cartItems: cart.cartItems,
       shippingAddress,
@@ -135,12 +135,11 @@ const createCardOrder = async (session) => {
             update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
          },
       }));
-      await Product.bulkWrite(bulkOption, {});
-
-      // 5) Clear cart depend on cartId
-      await Cart.findByIdAndDelete(cartId);
+      await ProductModel.bulkWrite(bulkOption, {});
+      await CartModel.findByIdAndDelete(cartId);
    }
 };
+
 export const webhookCheckout = asyncHandler(async (req, res) => {
    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
