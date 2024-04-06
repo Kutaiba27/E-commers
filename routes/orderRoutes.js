@@ -23,7 +23,7 @@ router.route('/:cartId')
    .post(protect, allowTo("user"), createCashOrder)
 
 router.route('/')
-   .get(filterOrderOr, getAllOrders )
+   .get(/*filterOrderOr,*/ getAllOrders )
 
 router.route("/:id")
 .get(getOneOrder)

@@ -36,6 +36,8 @@ app.use(express.json({limit: "200k"}));
 app.use(mongoSanitize())
 app.use(xss())
 app.use(hpp({whitelist: ["price"]}))
+app.use(express.static(path.join(dirname(fileURLToPath(import.meta.url)), '/uploads/')));
+
 
 
 
@@ -43,7 +45,6 @@ app.use(express.static(path.join(dirname(fileURLToPath(import.meta.url)), '/uplo
 if (process.env.NODE_ENV === "development") {
    app.use(morgan("dev"));
 }
-
 app.post('/webhook-checkout',express.raw({type: 'application/json'}),webhookCheckout)
 
 mountRoutes(app)
