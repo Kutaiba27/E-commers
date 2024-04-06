@@ -29,14 +29,6 @@ reviewSchema.pre(/^find/, function(next){
    next()
 })
 
-// reviewSchema.pre("save", async function(next){
-//    const product = await ProductModel.findOne({_id: this.product})
-//    product.ratingsQuantity = product.ratingsQuantity + 1 ;
-//    product.ratingsAverage = ((product.ratingsAverage * (product.ratingsQuantity - 1)) + this.rate) / product.ratingsQuantity;
-//    await product.save()
-//    next();
-// })
-
 reviewSchema.statics.calcAverageRatingsAndQuantity = async function(idProcduct){
    const result = await this.aggregate([
       {$match: { product: idProcduct }},

@@ -96,7 +96,6 @@ export const forgetPassword = asyncHandler(async ( req, res, next )=>{
          message
       })
    } catch (error) {
-      console.error("err",error)
       user.resetPasswordHash = undefined
       user.resetPasswordExpiration = undefined
       user.resetPasswordVerification = undefined
