@@ -2,10 +2,11 @@
 import { v4 as uuidV4 } from "uuid";
 import sharp from "sharp";
 import asyncHandler from 'express-async-handler'
-
 import { ProductModel } from "../models/productModel.js";
 import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
 import { deleteItem, updateItem, createItem, getItem, getAll } from './handerFactory.js'
+import { ApiFeatures } from "../utility/apiFeatures.js";
+import { RepositoryModel } from "../models/repoModel.js";
 
 export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
@@ -40,16 +41,43 @@ export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCo
 
 export const createProduct = createItem(ProductModel)
 
-export const getProdects = getAll(ProductModel, "Product")
+export const getProdects = getAll(RepositoryModel, "Product")
 
-export const getProduct = getItem(ProductModel, {path: "reviews"})
+export const getProduct = getItem(ProductModel, {path: "repoInfo"}, "-repoInfo.totalQuantity")
 
 export const updateProduct = updateItem(ProductModel)
 
 export const deleteProduct = deleteItem(ProductModel)
 
+export const search = async(req,res)=>{
+   let query ={};
+   query.$or = [
+      {title: {$regex: req.body.keyword, $options: 'i'}},
+      {description: {$regex: req.body.keyword, $options: 'i'}}
+   ];
+   const {mongooseQuery, qurier} = new ApiFeatures(ProductModel.find(),req.body).search('Product')
+   console.log(await mongooseQuery.exec());
+   console.log(qurier);
+   const product = await ProductModel.find(query)
+   res.json({product})
+}
 
-
+export const getProdectsnew = asyncHandler( async (req, res)=>{
+   let query = JSON.stringify(req.query)
+   query = query.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+   query = JSON.parse(query)
+   console.log(query)
+   const products = await RepositoryModel.aggregate([
+      {$match: { price: { $gt: 300 } }},
+      {$lookup: {
+         from: "products",
+         localField: "productId",
+         foreignField: "_id",
+         as: "product"
+      }}
+   ])
+   res.json(products)
+})
 
 
 

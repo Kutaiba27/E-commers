@@ -20,10 +20,13 @@ router.route('/checkout-session/:cartId').post(protect, allowTo('user'), checkou
 router.use(protect, allowTo("user","admin","manger"))
 
 router.route('/:cartId')
-   .post(protect, allowTo("user"), createCashOrder)
+   .post(protect, allowTo("user","admin","manger"), createCashOrder)
 
 router.route('/')
-   .get(/*filterOrderOr,*/ getAllOrders )
+   .get(filterOrderOr, getAllOrders )
+
+router.route('/all')
+   .get(getAllOrders )
 
 router.route("/:id")
 .get(getOneOrder)

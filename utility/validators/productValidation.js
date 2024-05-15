@@ -17,17 +17,6 @@ export const createpoductValidator = [
    .withMessage("description is required")
    .isLength({max: 2000})
    .withMessage("the length of the description"),
-   check("price")
-   .notEmpty()
-   .withMessage("price is required")
-   .isNumeric()
-   .withMessage("the price must be a number")
-   .isLength({max: 32})
-   .withMessage("To long price"),
-   check("sold")
-   .optional()
-   .isNumeric()
-   .withMessage("the quntity must be a number"),
    check("priceAfterDiscount")
    .optional()
    .isNumeric()

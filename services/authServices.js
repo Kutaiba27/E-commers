@@ -50,6 +50,7 @@ export const protect = asyncHandler( async (req, res,next)=>{
    if( !token || token == "null"){
       return next(new Error('you not logedin please login first and try again'),401);
    }   
+   console.log(token);
    const decoded = jwt.verify(token, process.env.SECRET_KEY)
    const user = await UserModel.findById(decoded.userId)
    if( !user ){
