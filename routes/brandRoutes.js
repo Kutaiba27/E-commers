@@ -26,7 +26,7 @@ router.route('/')
    .get(protect, getBrands)
    .post(
       protect,
-      allowTo('admin', 'manger'),
+      allowTo('admin', 'manger','user'),
       uploadBrandImages,
       resizingBrandImage,
       createBrandValidator,

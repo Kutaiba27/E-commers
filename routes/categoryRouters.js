@@ -29,7 +29,7 @@ router.route("/")
 	.get(getCategories)
 	.post(
 		protect,
-		allowTo('admin', 'manger'),
+		allowTo('admin', 'manger',"user"),
 		uploadCategoryImages,
 		resizingCategoryImage,
 		createCategoryValidator,
