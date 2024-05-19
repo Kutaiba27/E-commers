@@ -16,6 +16,23 @@ export class ApiFeatures {
       return this
    }
 
+   search(modelName){
+      if(this.queryString.keyword){
+         let query = {};
+         if(modelName == "Product") {
+            query.$or = [
+               {title: {$regex: this.queryString.keyword, $options: 'i'}},
+               {description: {$regex: this.queryString.keyword, $options: 'i'}}
+            ];
+         }else{
+            query = {title: {$regex: this.queryString.keyword, $options: 'i'}}
+         }
+         console.log("this is",query);
+         this.mongooseQuery.find({title: {$regex: "Gold", $options: 'i'}})
+      }
+      return this;
+   }
+   
    sort(){
       if(this.queryString.sort){
          const sortBy = this.queryString.sort.replace(/\b,\b/g," ")
@@ -36,46 +53,23 @@ export class ApiFeatures {
       return this;
    }
 
-   search(modelName){
-      if(this.queryString.keyword){
-         console.log(this.queryString.keyword)
-         let query = {};
-         if(modelName == "Product") {
-            query.$or = [
-               {title: {$regex: this.queryString.keyword, $options: 'i'}},
-               {description: {$regex: this.queryString.keyword, $options: 'i'}}
-            ];
-         }else{
-            query = {title: {$regex: this.queryString.keyword, $options: 'i'}}
-         }
-
-         this.mongooseQuery.find(query)
-      }
-      return this;
-   }
-
    pagenate(countDocuments) {
 
       const page = this.queryString.page * 1 || 1;
       const limit = this.queryString.limit * 1 || 10;
       const skip = (page - 1) * limit;
-
       const pageObject = {}
       pageObject.currntPage = page;
       pageObject.limit = limit;
       pageObject.numberOfPages = Math.ceil(countDocuments / limit)
-
       if(page * limit < countDocuments){
          pageObject.nextPage = pageObject.currntPage + 1;
       }
-
       if (0 < skip){
          pageObject.privuse = pageObject.currntPage - 1; 
       }
-
       this.pagenation = pageObject;
       this.mongooseQuery = this.mongooseQuery.skip(skip).limit(limit);
-
       return this;
    }
 }

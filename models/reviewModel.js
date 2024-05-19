@@ -14,12 +14,12 @@ const reviewSchema = new Schema({
    },
    user: {
       type: Schema.ObjectId,
-      ref: "User",
+      ref: "user",
       required: [true, "the review must be belongs to some user"]
    },
    product: {
       type: Schema.ObjectId,
-      ref: "Product",
+      ref: "product",
       required: [true, "review must be belong to product"]
    }
 }, { timestamps: true})
@@ -28,14 +28,6 @@ reviewSchema.pre(/^find/, function(next){
    this.populate({path: "user", select: "name _id"})
    next()
 })
-
-// reviewSchema.pre("save", async function(next){
-//    const product = await ProductModel.findOne({_id: this.product})
-//    product.ratingsQuantity = product.ratingsQuantity + 1 ;
-//    product.ratingsAverage = ((product.ratingsAverage * (product.ratingsQuantity - 1)) + this.rate) / product.ratingsQuantity;
-//    await product.save()
-//    next();
-// })
 
 reviewSchema.statics.calcAverageRatingsAndQuantity = async function(idProcduct){
    const result = await this.aggregate([
@@ -67,4 +59,4 @@ reviewSchema.post('remove', async function () {
    await this.constructor.calcAverageRatingsAndQuantity(this.product);
 });
 
-export const ReviewModel = model('Review', reviewSchema);
+export const ReviewModel = model('review', reviewSchema);

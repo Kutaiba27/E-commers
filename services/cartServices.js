@@ -3,6 +3,7 @@ import asyncHandler from "express-async-handler";
 import { CartModel } from "../models/cartModel.js";
 import { ProductModel } from "../models/productModel.js";
 import { CouponModel } from "../models/couponModel.js";
+import { RepositoryModel } from "../models/repoModel.js";
 
 const cartCalculator = async (cart,coupon)=>{
    let total = 0;
@@ -26,10 +27,12 @@ const cartCalculator = async (cart,coupon)=>{
 export const addProductToCart = asyncHandler(async (req, res)=>{
    const { productId, color } = req.body
    const product = await ProductModel.findOne({_id: productId})
+   const prodRepo = await RepositoryModel.findOne({productId: product._id})
    let cart = await CartModel.findOne({user: req.user._id})
    if(!cart){
+      console.log("hello ")
       cart = await CartModel.create({
-         cartItems: [{product: product._id, color: color, price:product.price}],
+         cartItems: [{product: product._id, color: color, price:prodRepo.price}],
          user: req.user._id
       })
       // cart.cartItems.push({product: product._id, color: color, price:product.price})
@@ -38,7 +41,7 @@ export const addProductToCart = asyncHandler(async (req, res)=>{
       if( productIndex >= 0 ){
          cart.cartItems[productIndex].quantity += 1 ; 
       }else{
-         cart.cartItems.push({product: product._id, color: color, price:product.price})
+         cart.cartItems.push({product: product._id, color: color, price:prodRepo.price})
       }
    }
    await cartCalculator(cart,req.body.coupon)

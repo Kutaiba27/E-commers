@@ -13,7 +13,7 @@ const generateToken = (userEmail,userId)=> jwt.sign(
    {expiresIn: '1d' || process.env.EXPIRED_DATE} )
 
 export const signUp = asyncHandler( async (req, res) => {
-
+   console.log(req.body)
    const user = await UserModel.create({
       name: req.body.name,
       email: req.body.email,
@@ -50,6 +50,7 @@ export const protect = asyncHandler( async (req, res,next)=>{
    if( !token || token == "null"){
       return next(new Error('you not logedin please login first and try again'),401);
    }   
+   console.log(token);
    const decoded = jwt.verify(token, process.env.SECRET_KEY)
    const user = await UserModel.findById(decoded.userId)
    if( !user ){
@@ -96,7 +97,6 @@ export const forgetPassword = asyncHandler(async ( req, res, next )=>{
          message
       })
    } catch (error) {
-      console.error("err",error)
       user.resetPasswordHash = undefined
       user.resetPasswordExpiration = undefined
       user.resetPasswordVerification = undefined

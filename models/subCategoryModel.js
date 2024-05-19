@@ -15,11 +15,11 @@ const SubCategoryShcema = new Schema({
    },
    category: {
       type: Schema.ObjectId,
-      ref:'Category',
+      ref:'sategory',
       required:[true, "SubCategort Must Be Belong To Parant Category"]
    }
 },{timeseries:true})
 
-const SubCategoryModel = model("SubCategory", SubCategoryShcema)
+const SubCategoryModel = model("subCategory", SubCategoryShcema)
 
 export { SubCategoryModel }

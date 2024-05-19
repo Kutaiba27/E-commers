@@ -14,14 +14,16 @@ import {
    getProduct,
    updateProduct,
    uploadPodactImage,
-   resizingProductImage
+   resizingProductImage,
+   search,
+   getProdectsnew
 } from "../services/productServices.js";
 
 import { ReviewRouter } from "./reviewRoutes.js";
 import { protect, allowTo } from "../services/authServices.js";
 
 const router = Router()
-
+router.get('/getProdectsnew',getProdectsnew)
 router.use("/:productId/reviews", ReviewRouter)
 
 router.route("/")
@@ -34,6 +36,8 @@ router.route("/")
       createpoductValidator,
       createProduct
    );
+
+router.get('/search',search)
 
 router.route("/:id")
    .get(getProductValidator, getProduct)
@@ -48,6 +52,6 @@ router.route("/:id")
       allowTo('manger'),
       deleteProductValidator,
       deleteProduct
-   );
+   );   
 
 export { router as ProductRouter }

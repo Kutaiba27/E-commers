@@ -19,20 +19,6 @@ const ProductShcema = new Schema({
       required: true,
       minlength: [20, "To Shourt Description"],
    },
-   quantity: {
-      type: Number,
-      required: true,
-   },
-   sold: {
-      type: Number,
-      default: 0
-   },
-   price: {
-      type: Number,
-      trim: true,
-      required: true,
-      max: [20000, "To Long price"],
-   },
    priceAfterDiscount: {
       type: Number,
    },
@@ -48,16 +34,21 @@ const ProductShcema = new Schema({
    },
    category: {
       type: Schema.ObjectId,
-      ref: "Category",
+      ref: "category",
       required: [true, " Prodect Must Belongs To Category"],
    },
+   repoInfo:{
+      type: Schema.ObjectId,
+      ref:"repository"
+   }
+   ,
    subCategory: {
       type: [Schema.ObjectId],
-      ref: "SubCategory",
+      ref: "subCategory",
    },
    brand: {
       type: Schema.ObjectId,
-      ref: "Brand",
+      ref: "brand",
    },
    ratingsAverage: {
       type: Number,
@@ -77,7 +68,7 @@ const ProductShcema = new Schema({
 )
 
 ProductShcema.virtual("reviews", {
-   ref: "Review",
+   ref: "review",
    foreignField: "product",
    localField: "_id"
 })

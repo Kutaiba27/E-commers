@@ -3,11 +3,14 @@
 import { Stripe } from 'stripe'
 import asyncHandler from 'express-async-handler'
 
+import { UserModel } from '../models/userModel.js'
 import { CartModel } from '../models/cartModel.js';
 import { OrderModel } from '../models/orderModel.js';
 import { ApiError } from '../utility/apiError.js';
-import { ProductModel } from '../models/productModel.js';
+// import { ProductModel } from '../models/productModel.js';
 import { getAll, getItem } from './handerFactory.js';
+import { RepositoryModel } from '../models/repoModel.js'
+import { InvoicesModel } from '../models/invoicesModel.js';
 
 
 
@@ -32,10 +35,10 @@ export const createCashOrder = asyncHandler(async (req, res) => {
       const bulkOption = cart.cartItems.map((item) => ({
          updateOne: {
             filter: { _id: item.product },
-            update: { $inc: { quantity: -item.quantity, sold: +item.quantity } }
+            update: { $inc: { currantQuantity: -item.quantity, salesQuantity: +item.quantity } }
          }
       }))
-      await ProductModel.bulkWrite(bulkOption, {})
+      await RepositoryModel.bulkWrite(bulkOption, {})
       await CartModel.findByIdAndDelete(req.params.id)
    }
    res.status(201).json({ stauts: " successfully" })
@@ -85,7 +88,6 @@ export const checkoutSession = asyncHandler(async (req, res) => {
    }
    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
-
    const session = await stripe.checkout.sessions.create({
       line_items: [
          {
@@ -113,11 +115,10 @@ const createCardOrder = async (session) => {
    const shippingAddress = session.metadata;
    const oderPrice = session.amount_total / 100;
 
-   const cart = await Cart.findById(cartId);
-   const user = await User.findOne({ email: session.customer_email });
+   const cart = await CartModel.findById(cartId);
+   const user = await UserModel.findOne({ email: session.customer_email });
 
-   // 3) Create order with default paymentMethodType card
-   const order = await Order.create({
+   const order = await OrderModel.create({
       user: user._id,
       cartItems: cart.cartItems,
       shippingAddress,
@@ -127,20 +128,24 @@ const createCardOrder = async (session) => {
       paymentMethodType: 'card',
    });
 
-   // 4) After creating order, decrement product quantity, increment product sold
    if (order) {
-      const bulkOption = cart.cartItems.map((item) => ({
+      const bulkOption = cart.cartItems.map(async (item) => {
+         const priceInInvoice = await InvoicesModel.findOne({productId: item.product}).select('price')
+         const income = item.price - priceInInvoice.price
+         return ({
          updateOne: {
             filter: { _id: item.product },
-            update: { $inc: { quantity: -item.quantity, sold: +item.quantity } },
+            update: { $inc: { currantQuantity: -item.quantity, salesQuantity: +item.quantity, netIncome: +income } },
          },
-      }));
-      await Product.bulkWrite(bulkOption, {});
+      })
+   }
+   );
 
-      // 5) Clear cart depend on cartId
-      await Cart.findByIdAndDelete(cartId);
+      await RepositoryModel.bulkWrite(bulkOption, {});
+      await CartModel.findByIdAndDelete(cartId);
    }
 };
+
 export const webhookCheckout = asyncHandler(async (req, res) => {
    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 

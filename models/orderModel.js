@@ -3,7 +3,7 @@ import { Schema, model } from "mongoose";
 const orderSchema = new Schema({
    user: {
       type: Schema.ObjectId,
-      ref: "User",
+      ref: "user",
       required: [true, "the user must be required"]
    },
    cartItems: [
@@ -27,6 +27,9 @@ const orderSchema = new Schema({
    taxPrice: {
       type: Number,
       default: 0
+   },
+   status:{
+      type: String,
    },
    shippingPrice: {
       type: Number,
