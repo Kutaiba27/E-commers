@@ -22,6 +22,12 @@ const repoShema = new Schema({
       default:0,
       required: true
    },
+   numberOfBox: {
+      type: Number,
+   },
+   productInBox: {
+      type: Number
+   },
    supplier: {
       type: Schema.ObjectId,
       ref: 'supplier'

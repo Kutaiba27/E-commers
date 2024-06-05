@@ -9,6 +9,12 @@ const invoiceShcema = new Schema({
       type: Schema.ObjectId,
       ref: 'supplier'
    },
+   numberOfBox: {
+      type: Number
+   },
+   productInBox: {
+      type: Number
+   },
    quantity: {
       type: Number,
       required: true

@@ -4,15 +4,15 @@ import sharp from "sharp";
 import asyncHandler from 'express-async-handler'
 import { ProductModel } from "../models/productModel.js";
 import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
-import { deleteItem, updateItem, createItem, getItem, getAll } from './handerFactory.js'
+import { deleteItem, updateItem, getItem, getAll } from './handerFactory.js'
 import { ApiFeatures } from "../utility/apiFeatures.js";
 import { RepositoryModel } from "../models/repoModel.js";
+import { sendImageToSift } from '../utility/sendToSift.js'
 
 export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
    if(req.files.imageCovered[0]){
       const imageCoveredNamed = `product-${uuidV4()}-${Date.now()}-covered.jpeg`
-
       await sharp(req.files.imageCovered[0].buffer)
          . resize(1200, 1333)
          .toFormat("jpeg")
@@ -37,9 +37,20 @@ export const resizingProductImage = asyncHandler( async (req, res, next)=>{
    next()
 })
 
-export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCount: 1 }, {name: "images", maxCount: 6}])
+export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCount: 1 }, {name: "images", maxCount: 6},{name: "boxImages", maxCount:5 }])
 
-export const createProduct = createItem(ProductModel)
+// export const createProduct = createItem(ProductModel)
+
+export const createProduct = async (req,res)=>{
+
+   const product = await ProductModel.create(req.body)
+   const response = await sendImageToSift(req.files.boxImages, product._id)
+   if(!response.data){
+      res.status(500).json({message:response.data})
+   }
+   res.status(201).json({response})
+
+}
 
 export const getProdects = getAll(RepositoryModel, "Product")
 
