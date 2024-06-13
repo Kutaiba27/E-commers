@@ -19,20 +19,6 @@ const ProductShcema = new Schema({
       required: true,
       minlength: [20, "To Shourt Description"],
    },
-   // quantity: {
-   //    type: Number,
-   //    required: true,
-   // },
-   // sold: {
-   //    type: Number,
-   //    default: 0
-   // },
-   // price: {
-   //    type: Number,
-   //    trim: true,
-   //    required: true,
-   //    max: [20000, "To Long price"],
-   // },
    priceAfterDiscount: {
       type: Number,
    },
