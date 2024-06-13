@@ -14,12 +14,12 @@ const reviewSchema = new Schema({
    },
    user: {
       type: Schema.ObjectId,
-      ref: "User",
+      ref: "user",
       required: [true, "the review must be belongs to some user"]
    },
    product: {
       type: Schema.ObjectId,
-      ref: "Product",
+      ref: "product",
       required: [true, "review must be belong to product"]
    }
 }, { timestamps: true})
@@ -59,4 +59,4 @@ reviewSchema.post('remove', async function () {
    await this.constructor.calcAverageRatingsAndQuantity(this.product);
 });
 
-export const ReviewModel = model('Review', reviewSchema);
+export const ReviewModel = model('review', reviewSchema);

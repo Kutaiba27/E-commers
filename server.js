@@ -31,7 +31,7 @@ app.use('/api', limiter)
 app.use(cors());
 app.options("*",cors());
 app.use(compression());
-app.use(express.json({limit: "200k"}));
+app.use(express.json({limit: "20000k"}));
 //clean the request from the noSQL Injection and the script and the 
 app.use(mongoSanitize())
 app.use(xss())

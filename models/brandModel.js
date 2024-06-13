@@ -35,6 +35,6 @@ BrandShcema.post('save',(doc)=>{
 })
 
 
-const BrandModel = model("Brand", BrandShcema)
+const BrandModel = model("brand", BrandShcema)
 
 export { BrandModel }

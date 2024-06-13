@@ -11,6 +11,10 @@ import { AddressRouter } from './addressRoutes.js';
 import { CouponRouter } from './couponRoutes.js';
 import { CartRouter } from './cartRoutes.js';
 import { OrderRouter } from './orderRoutes.js'
+import { SupplierRouter } from './supplierRoutes.js'
+import { InvoicesRouter } from './invoiceRoutes.js'
+import { RepositoryRouter } from './repoRouter.js'
+import { dashbourdRouter } from './dashbourdRouter.js'
 // import {ProductModel} from "../models/productModel.js";
 // import  data from "../utility/dummyData/products.json" assert { type: "json" };
 export const mountRoutes = (app)=>{
@@ -26,6 +30,10 @@ export const mountRoutes = (app)=>{
    app.use("/api/v1/coupon", CouponRouter);
    app.use("/api/v1/cart", CartRouter);
    app.use("/api/v1/order", OrderRouter);
+   app.use("/api/v1/repo", RepositoryRouter);
+   app.use("/api/v1/invoice", InvoicesRouter);
+   app.use("/api/v1/supplier", SupplierRouter);
+   app.use("/api/v1/dashbourd", dashbourdRouter);
    // app.post("/api/v1/insertPordect",async (req,res)=>{
    //
    //    const orders = await ProductModel.insertMany(data)

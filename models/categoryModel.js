@@ -33,6 +33,6 @@ CategorySchema.post('save',(doc)=>{
    setCategoryImage(doc)
 })
 
-const CategoryModel = model('Category',CategorySchema)
+const CategoryModel = model('category',CategorySchema)
 
 export { CategoryModel }
