@@ -1,6 +1,6 @@
-## endpoints for server 
+# Endpoints for server 
 
-# Categories
+## Categories
 
 - get all categories  get    :"http://localhost:8080/api/v1/categories"
 
@@ -12,7 +12,7 @@ the data thet the server expect receve it like :
 
 - delete category     delete :"http://localhost:8080/api/v1/categories/{id}"
 
-# Suppliers
+## Suppliers
 
 - get all supplier    get    :"http://localhost:8080/api/v1/supplier"
 
@@ -29,7 +29,7 @@ the data thet the server expect receve it like :
 
 - delete suppliser    delete :"http://localhost:8080/api/v1/supplier/{id}"
 
-# Orders
+## Orders
 
 -get all orders       get    :"http://localhost:8080/api/v1/order"
 
