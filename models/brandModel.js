@@ -2,7 +2,6 @@
 
 import { Schema, model } from "mongoose";
 
-
 const BrandShcema = new Schema({
    name: {
       type:String,
