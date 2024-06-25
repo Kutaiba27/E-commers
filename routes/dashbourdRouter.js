@@ -11,6 +11,6 @@ const router = Router();
 router.use('/repo',RepositoryRouter)
 router.use('/invoices',InvoicesRouter)
 router.use('/order',OrderRouter)
-router.get('/byimage',uploudImageToServer,byImage)
+router.use('/byimage',uploudImageToServer,byImage)
 
 export { router as dashbourdRouter } 

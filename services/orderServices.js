@@ -102,7 +102,7 @@ export const checkoutSession = asyncHandler(async (req, res) => {
          },
       ],
       mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/api/v1/dashbourd/repo`,
+      success_url: `${req.protocol}://${req.get('host')}/api/v1/order`,
       cancel_url: `${req.protocol}://${req.get('host')}/api/v1/cart`,
       customer_email: req.user.email,
       client_reference_id: req.params.cartId,

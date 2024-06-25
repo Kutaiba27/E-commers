@@ -5,21 +5,24 @@ import { deleteItem, getAll, getItem } from "./handerFactory.js";
 import asyncHandler from 'express-async-handler'
 
 
-// export const addRepository = createItem(RepositoryModel);
 export const addRepository = asyncHandler(async (req, res)=>{
    console.log(req.body)
    const newInvoice = await InvoicesModel.create({
       price: req.body.price ,
       productId: req.body.productId,
       quantity: req.body.addQuantity,
-      totalPrice: req.body.price * req.body.addQuantity,
+      numberOfBox: req.body.numberOfBox,
+      productInBox: req.body.productInBox,
+      totalPrice: req.body.price * (req.body.numberOfBox * req.body.productInBox),
       supplierId: req.body.supplier
    })
    req.body.invoice = newInvoice._id
    const prodRepo = await RepositoryModel.create({
       price: req.body.price,
-      currantQuantity: req.body.addQuantity,
-      totalQuantity: req.body.addQuantity,
+      productInBox: req.body.productInBox,
+      numberOfBox: req.body.numberOfBox,
+      currantQuantity: req.body.productInBox * req.body.numberOfBox,
+      totalQuantity: req.body.productInBox * req.body.numberOfBox,
       invoice: newInvoice._id,
       lastAddQuantity: req.body.addQuantity,
       productId: req.body.productId,
@@ -46,9 +49,9 @@ export const updateRepository = async( req,res)=>{
    const newProdRepo = await RepositoryModel.updateOne(
       {productId:req.body.productId},
       {
-         currantQuantity: productRepo.currantQuantity + req.body.addAmount,
-         totalQuantity: productRepo.totalQuantity + req.body.addAmount,
-         lastAddQuantity: req.body.addAmount,
+         currantQuantity: productRepo.currantQuantity + (req.body.numberOfBox * req.body.productInBox),
+         totalQuantity: productRepo.totalQuantity + (req.body.numberOfBox * req.body.productInBox),
+         lastAddQuantity: (req.body.numberOfBox * req.body.productInBox),
          price: req.body.price,
          supplier: req.body.supplier
       },{
@@ -58,9 +61,11 @@ export const updateRepository = async( req,res)=>{
    const newInvoice = await InvoicesModel.create({
       price: req.body.price,
       productId: productRepo.productId,
-      quantity: req.body.addAmount,
+      numberOfBox: req.body.numberOfBox,
+      productInBox: req.body.productInBox,
+      quantity: (req.body.numberOfBox * req.body.productInBox),
       supplierId: req.body.supplier,
-      totalPrice: req.body.addAmount * req.body.price
+      totalPrice: (req.body.numberOfBox * req.body.productInBox) * req.body.price
    })
    productRepo.invoice = newInvoice
    
