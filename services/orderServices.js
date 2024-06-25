@@ -117,7 +117,6 @@ const createCardOrder = async (session) => {
 
    const cart = await CartModel.findById(cartId);
    const user = await UserModel.findOne({ email: session.customer_email });
-
    const order = await OrderModel.create({
       user: user._id,
       cartItems: cart.cartItems,
@@ -132,10 +131,18 @@ const createCardOrder = async (session) => {
       const bulkOption = cart.cartItems.map(async (item) => {
          const priceInInvoice = await InvoicesModel.findOne({productId: item.product}).select('price')
          const income = item.price - priceInInvoice.price
+         const product = await RepositoryModel.findById(item.product)
+         const remainBox = (product.currantQuantity - item.quantity)/ product.productInBox
          return ({
          updateOne: {
             filter: { _id: item.product },
-            update: { $inc: { currantQuantity: -item.quantity, salesQuantity: +item.quantity, netIncome: +income } },
+            update: { $inc: { 
+               currantQuantity: product.currantQuantity - item.quantity, 
+               salesQuantity: +item.quantity, 
+               netIncome: +income,
+               numberOfBox: Math.floor(remainBox),
+
+            } },
          },
       })
    }

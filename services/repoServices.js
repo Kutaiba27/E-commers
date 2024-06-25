@@ -6,7 +6,6 @@ import asyncHandler from 'express-async-handler'
 
 
 export const addRepository = asyncHandler(async (req, res)=>{
-   console.log(req.body)
    const newInvoice = await InvoicesModel.create({
       price: req.body.price ,
       productId: req.body.productId,

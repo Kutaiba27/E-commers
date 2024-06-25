@@ -2,9 +2,35 @@ import { RepositoryModel } from "../models/repoModel.js"
 import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
 import { Types } from 'mongoose'
 import axios from "axios"
+import asyncHandler from "express-async-handler";
 
 
-export const uploudImageToServer = uploadMulityImage([{name: "front", maxCount: 1 },{name: "back", maxCount:1}])
+
+export const uploudImageForInventory = uploadMulityImage([{name: "imageToInventory", maxCount:1}])
+
+export const hightSeles = asyncHandler(async (req,res)=>{
+   
+   const hightSelse = await RepositoryModel.aggregate([
+      { $group: {
+            _id:"$_id"
+         },
+      },
+      {
+         $sort: {
+            salesQuantity: -1
+         }
+      },
+      {
+         $limit: 1
+      }
+   ])
+   res.status(200).json({"hightSelse":hightSelse[0]})
+})
+
+export const numberOfProducts = asyncHandler(async (req,res)=>{
+   const response = await axios.post('http://127.0.0.1:8000/upload-files/inventory-product',{imageToInventory:req.files[0]})
+   res.status(200).json(response)
+})
 
 export const inventory = async(req,res)=>{
    const inventory = await RepositoryModel.aggregate([
