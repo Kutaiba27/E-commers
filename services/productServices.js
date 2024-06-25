@@ -7,7 +7,7 @@ import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
 import { deleteItem, updateItem, getItem, getAll } from './handerFactory.js'
 import { ApiFeatures } from "../utility/apiFeatures.js";
 import { RepositoryModel } from "../models/repoModel.js";
-import { sendImageToSift } from '../utility/sendToSift.js'
+import { sendImageToSift } from "../utility/sendToSift.js"
 
 export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
@@ -39,7 +39,6 @@ export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
 export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCount: 1 }, {name: "images", maxCount: 6},{name: "boxImages", maxCount:5 }])
 
-// export const createProduct = createItem(ProductModel)
 
 export const createProduct = async (req,res)=>{
 
@@ -48,11 +47,11 @@ export const createProduct = async (req,res)=>{
    if(!response.data){
       res.status(500).json({message:response.data})
    }
-   res.status(201).json({response})
+   res.status(201).json({product})
 
 }
 
-export const getProdects = getAll(RepositoryModel, "Product")
+export const getProdects = getAll(ProductModel, "Product")
 
 export const getProduct = getItem(ProductModel, {path: "repoInfo"}, "-repoInfo.totalQuantity")
 

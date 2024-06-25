@@ -12,26 +12,26 @@ const CategorySchema = new Schema({
       type: String,
       lowercase: true
    },
-   image: String
+   // image: String
 },{
    timestamps: true
 })
 
-const setCategoryImage = (doc)=>{
-   if(doc.image){
-      // eslint-disable-next-line no-undef
-      const imageUrl = `${process.env.BASE_URL}/category/${doc.image}`
-      doc.image = imageUrl;
-   }
-}
+// const setCategoryImage = (doc)=>{
+//    if(doc.image){
+//       // eslint-disable-next-line no-undef
+//       const imageUrl = `${process.env.BASE_URL}/category/${doc.image}`
+//       doc.image = imageUrl;
+//    }
+// }
 
-CategorySchema.post('init',(doc)=>{
-   setCategoryImage(doc)
-})
+// CategorySchema.post('init',(doc)=>{
+//    setCategoryImage(doc)
+// })
 
-CategorySchema.post('save',(doc)=>{
-   setCategoryImage(doc)
-})
+// CategorySchema.post('save',(doc)=>{
+//    setCategoryImage(doc)
+// })
 
 const CategoryModel = model('category',CategorySchema)
 

@@ -28,10 +28,10 @@ router.use("/:categoryId/subcategory", SubCategoryRouter)
 router.route("/")
 	.get(getCategories)
 	.post(
-		protect,
-		allowTo('admin', 'manger',"user"),
-		uploadCategoryImages,
-		resizingCategoryImage,
+		// protect,
+		// allowTo('admin', 'manger',"user"),
+		// uploadCategoryImages,
+		// resizingCategoryImage,
 		createCategoryValidator,
 		createCategory
 	);
@@ -47,8 +47,8 @@ router.route("/:id")
 		updateCategory
 	)
 	.delete(
-				protect, 
-				allowTo('manger'), 
+				// protect, 
+				// allowTo('manger'), 
 				deleteCategoriesValidator, 
 				deletCategory
 				);

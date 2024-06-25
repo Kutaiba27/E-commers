@@ -1,4 +1,4 @@
-FROM node:21
+FROM node:20
 
 WORKDIR /app
 
@@ -8,3 +8,6 @@ RUN npm install
 
 COPY . .
 
+EXPOSE 8080
+
+CMD [ "npm", "run", "start:dev" ]

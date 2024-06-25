@@ -4,7 +4,7 @@ import mongoose from 'mongoose'
 
 const mongoConnection = ()=>{
 
-   mongoose.connect(process.env.MONGO_URI || 'mongodb://0.0.0.0:27017/e-commerce',{
+   mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/e-commerce',{
       serverApi:{
          version: "1",
          deprecationErrors: true,

@@ -43,13 +43,13 @@ router.route("/:id")
    .get(getProductValidator, getProduct)
    .put(
       protect,
-      allowTo('admin', 'manger'),
+      allowTo('admin', 'manger','user'),
       updateProductValidator,
       updateProduct
    )
    .delete(
       protect,
-      allowTo('manger'),
+      // allowTo('manger'),
       deleteProductValidator,
       deleteProduct
    );   
