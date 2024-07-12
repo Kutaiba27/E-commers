@@ -11,7 +11,10 @@ const deleteItem = (Model)=> asyncHandler( async (req, res, next)=>{
       return next(new ApiError(`There Are No Item For This Id: ${id}`,400));
    }
    // await result.remove();
-   res.status(200).json({message: `Delete Item Successfully`});
+   res.status(200).json({
+      message: `Delete Item Successfully`,
+      result: true
+   });
 })
 
 const updateItem = (Model)=> asyncHandler(async (req, res, next) => {

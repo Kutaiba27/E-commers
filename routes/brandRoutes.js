@@ -45,7 +45,7 @@ router.route('/:id')
       )
    .delete(
       protect,
-		allowTo('manger'),
+		allowTo('manger',"user"),
       deleteBrandValidator, 
       deleteBrand
       );
