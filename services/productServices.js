@@ -4,10 +4,10 @@ import sharp from "sharp";
 import asyncHandler from 'express-async-handler'
 import { ProductModel } from "../models/productModel.js";
 import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
-import { deleteItem, updateItem, getItem, getAll } from './handerFactory.js'
+import { deleteItem, updateItem, getAll } from './handerFactory.js'
 import { ApiFeatures } from "../utility/apiFeatures.js";
 import { RepositoryModel } from "../models/repoModel.js";
-import { sendImageToSift } from "../utility/sendToSift.js"
+// import { sendImageToSift } from "../utility/sendToSift.js"
 
 export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
@@ -25,11 +25,11 @@ export const resizingProductImage = asyncHandler( async (req, res, next)=>{
       req.body.images = []
       await Promise.all(
       req.files.images.map(async (image)=>{
-         const imagesName = `product-${uuidV4()}-${Date.now()}.jpeg`
+         const imagesName = `product-${uuidV4()}-${Date.now()}.png`
          await sharp(image.buffer)
-         . resize(1200, 1333)
-         .toFormat("jpeg")
-         .jpeg({quality: 90})
+         // . resize(1200, 1333)
+         .toFormat("png")
+         .png({quality: 90})
          .toFile(`uploads/products/${imagesName}`)
          req.body.images.push(imagesName)
       }))
@@ -43,18 +43,35 @@ export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCo
 export const createProduct = async (req,res)=>{
 
    const product = await ProductModel.create(req.body)
-   const response = await sendImageToSift(req.files.boxImages, product._id)
-   if(!response.data){
-      res.status(500).json({message:response.data})
-   }
+   const productRepository = new RepositoryModel()
+   productRepository.productId = product._id
+   productRepository.salesQuantity = 0;
+   productRepository.salesPrice = 0;
+   productRepository.lastAddQuantity = 0;
+   productRepository.totalQuantity = 0;
+   productRepository.currantQuantity = 0;
+   productRepository.productInBox = 0;
+   productRepository.numberOfBox = 0;
+   productRepository.invoice = []
+
+   // const response = await sendImageToSift(req.files.boxImages, product._id)
+   // if(!response.data){
+   //    res.status(500).json({message:response.data})
+   // }
    res.status(201).json({product})
 
 }
 
 export const getProdects = getAll(ProductModel, "Product")
 
-export const getProduct = getItem(ProductModel, {path: "repoInfo"}, "-repoInfo.totalQuantity")
-
+export const getProduct = async (req,res)=>{
+   console.log(req.params.id)
+   let product = await ProductModel.findById(req.params.id)
+      .populate("repoInfo")
+   product = await product.populate({path: "repoInfo.supplier"})
+   product = await product.populate({path: "repoInfo.invoice"})
+   res.status(200).json({data: product})
+}
 export const updateProduct = updateItem(ProductModel)
 
 export const deleteProduct = deleteItem(ProductModel)

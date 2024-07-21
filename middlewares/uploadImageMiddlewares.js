@@ -1,10 +1,11 @@
 import multer from "multer";
 
 import { ApiError } from "../utility/apiError.js";
-
+const cond = true;
 const multerOptions = ()=>{
    const multerFilter = (req, file, cb) => {
-      if( file.mimetype.split('/')[0] == 'image'){
+      // if( file.mimetype.split('/')[0] == 'image'){
+      if(cond == true){
          cb(null, true)
       }else {
          cb(new ApiError("the file must be image", 400),false);

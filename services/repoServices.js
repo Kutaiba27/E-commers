@@ -22,7 +22,7 @@ export const addRepository = asyncHandler(async (req, res)=>{
       numberOfBox: req.body.numberOfBox,
       currantQuantity: req.body.productInBox * req.body.numberOfBox,
       totalQuantity: req.body.productInBox * req.body.numberOfBox,
-      invoice: newInvoice._id,
+      invoice: [newInvoice._id],
       lastAddQuantity: req.body.addQuantity,
       productId: req.body.productId,
       supplier: req.body.supplier
@@ -66,8 +66,8 @@ export const updateRepository = async( req,res)=>{
       supplierId: req.body.supplier,
       totalPrice: (req.body.numberOfBox * req.body.productInBox) * req.body.price
    })
-   productRepo.invoice = newInvoice
-   
+   productRepo.invoice.push(newInvoice._id)
+   await productRepo.save()
    res.json({
       newInvoice,
       newProdRepo

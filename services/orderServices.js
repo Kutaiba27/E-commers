@@ -11,6 +11,7 @@ import { ApiError } from '../utility/apiError.js';
 import { getAll, getItem } from './handerFactory.js';
 import { RepositoryModel } from '../models/repoModel.js'
 import { InvoicesModel } from '../models/invoicesModel.js';
+import { sendEmail } from '../utility/sendEmail.js';
 
 
 
@@ -60,8 +61,16 @@ export const updateDeliverOrder = asyncHandler(async (req, res) => {
    if (!order) {
       throw new ApiError("there is no order with id", 404)
    }
-   order.isDelivered = true;
-   order.deliveredDate = Date.now();
+   order.status = req.body.status;
+   if(req.body.status == "delivered") {
+      order.deliveredDate = Date.now();
+   }
+   const user = await UserModel.findById(order.user)
+   await sendEmail({
+      email: user.email, 
+      subject: "Order updated status",
+      text: `Order status update to ${req.body.status}`
+   })
    order = await order.save();
    res.status(201).json({ data: order })
 })

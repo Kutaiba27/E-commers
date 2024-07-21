@@ -36,10 +36,10 @@ const repoShema = new Schema({
       type: Schema.ObjectId,
       ref: 'product'
    },
-   invoice : {
+   invoice : [{
       type: Schema.ObjectId,
       ref: 'invoice'
-   },
+   }],
    netIncome:{
       type: Number,
    }

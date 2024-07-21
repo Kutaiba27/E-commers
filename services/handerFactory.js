@@ -48,7 +48,7 @@ const getItem = (Model, populateOpt, selectOpt)=> asyncHandler(async (req, res, 
    }
    const document = await query;
    if (!document) {
-      return next(new ApiError(`There is no category with id ${id}`, 404));
+      return next(new ApiError(`There is no item with id ${id}`, 404));
    }
    res.status(200).json({ data: document });
 });

@@ -32,6 +32,6 @@ router.route("/:id")
 .get(getOneOrder)
 
 router.put("/:OrderId/pay", protect, allowTo("user","admin","manger"), updatePayOrder)
-router.put("/:OrderId/deliverd", protect, allowTo("user","admin", "manger"), updateDeliverOrder)
+router.put("status/:OrderId", protect, allowTo("user","admin", "manger"), updateDeliverOrder)
 
 export { router as OrderRouter }
