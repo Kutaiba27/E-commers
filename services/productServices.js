@@ -42,7 +42,7 @@ export const uploadPodactImage = uploadMulityImage([{name: "imageCovered", maxCo
 
 export const createProduct = async (req,res)=>{
 
-   const product = await ProductModel.create(req.body)
+   let product = await ProductModel.create(req.body)
    const productRepository = new RepositoryModel()
    productRepository.productId = product._id
    productRepository.salesQuantity = 0;
@@ -53,7 +53,11 @@ export const createProduct = async (req,res)=>{
    productRepository.productInBox = 0;
    productRepository.numberOfBox = 0;
    productRepository.invoice = []
-
+   await productRepository.save()
+   product.repoInfo = productRepository._id
+   await product.save();
+   product = await ProductModel.findById(product._id)
+      .populate("repoInfo").populate("brand")
    // const response = await sendImageToSift(req.files.boxImages, product._id)
    // if(!response.data){
    //    res.status(500).json({message:response.data})
@@ -65,10 +69,12 @@ export const createProduct = async (req,res)=>{
 export const getProdects = getAll(ProductModel, "Product")
 
 export const getProduct = async (req,res)=>{
-   console.log(req.params.id)
+
    let product = await ProductModel.findById(req.params.id)
       .populate("repoInfo")
    product = await product.populate({path: "repoInfo.supplier"})
+   product = await product.populate({path: "brand"})
+
    product = await product.populate({path: "repoInfo.invoice"})
    res.status(200).json({data: product})
 }
