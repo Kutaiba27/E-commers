@@ -71,8 +71,8 @@ export const getProdects = getAll(ProductModel, "Product")
 export const getProduct = async (req,res)=>{
 
    let product = await ProductModel.findById(req.params.id)
-      .populate("repoInfo")
-   product = await product.populate({path: "repoInfo.supplier"})
+      .populate("repoInfo").populate({path: "repoInfo.supplier"})
+   // product = await product
    product = await product.populate({path: "brand"})
 
    product = await product.populate({path: "repoInfo.invoice"})

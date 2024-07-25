@@ -69,6 +69,9 @@ const getAll = (Model, modelName = '') => asyncHandler(async (req, res) => {
       if(modelName ==  "repo"){
          mongooseQuery.populate('invoice')
       }
+      if(modelName == "Product"){
+         mongooseQuery.populate("repoInfo")
+      }
       const result = await mongooseQuery
    res.status(200).json({ result: result.length ,pagenation ,data: result });
 });

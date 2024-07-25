@@ -52,6 +52,8 @@ export const updateRepository = async( req,res)=>{
          totalQuantity: productRepo.totalQuantity + (req.body.numberOfBox * req.body.productInBox),
          lastAddQuantity: (req.body.numberOfBox * req.body.productInBox),
          price: req.body.price,
+         numberOfBox: productRepo.numberOfBox + req.body.numberOfBox,
+         productInBox: req.body.productInBox ? req.body.productInBox : productRepo.productInBox,
          supplier: req.body.supplier
       },{
          new: true

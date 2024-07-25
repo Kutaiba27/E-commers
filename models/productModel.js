@@ -88,9 +88,9 @@ const setProdactImage = (doc)=>{
    }
 }
 
-ProductShcema.post('init',(doc)=>{
-   setProdactImage(doc)
-})
+// ProductShcema.post('init',(doc)=>{
+//    setProdactImage(doc)
+// })
 
 ProductShcema.post('save',(doc)=>{
    setProdactImage(doc)
