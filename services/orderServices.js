@@ -86,39 +86,60 @@ export const updatePayOrder = asyncHandler(async (req, res) => {
    res.status(201).json({ data: order })
 })
 
-export const checkoutSession = asyncHandler(async (req, res) => {
-   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
+// export const checkoutSession = asyncHandler(async (req, res) => {
+//    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY)
 
-   let shippingPrice = 0, taxPrice = 0;
+//    let shippingPrice = 0, taxPrice = 0;
 
+//    const cart = await CartModel.findOne({ _id: req.params.cartId });
+//    if (!cart) {
+//       throw new ApiError(" there is no cart")
+//    }
+//    const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
+//    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
+//    const session = await stripe.checkout.sessions.create({
+//       line_items: [
+//          {
+//             price_data: {
+//                unit_amount: totalOrderPrice * 100,
+//                currency: 'egp',
+//                product_data: {
+//                   name: req.user.name,
+//                }
+//             },
+//             quantity: 1,
+//          },
+//       ],
+//       mode: 'payment',
+//       success_url: `${req.protocol}://${req.get('host')}/api/v1/order`,
+//       cancel_url: `${req.protocol}://${req.get('host')}/api/v1/cart`,
+//       customer_email: req.user.email,
+//       client_reference_id: req.params.cartId,
+//       metadata: req.body.shippingAddress,
+//    });
+//    res.status(200).json({ status: 'success', data: session })
+// })
+export const checkoutSession = asyncHandler(async (req,res)=>{
+      let shippingPrice = 0, taxPrice = 0;
    const cart = await CartModel.findOne({ _id: req.params.cartId });
    if (!cart) {
       throw new ApiError(" there is no cart")
    }
-   const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
+   const user = await UserModel.findById(req.user.id)
+      const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
-   const session = await stripe.checkout.sessions.create({
-      line_items: [
-         {
-            price_data: {
-               unit_amount: totalOrderPrice * 100,
-               currency: 'egp',
-               product_data: {
-                  name: req.user.name,
-               }
-            },
-            quantity: 1,
-         },
-      ],
-      mode: 'payment',
-      success_url: `${req.protocol}://${req.get('host')}/api/v1/order`,
-      cancel_url: `${req.protocol}://${req.get('host')}/api/v1/cart`,
-      customer_email: req.user.email,
-      client_reference_id: req.params.cartId,
-      metadata: req.body.shippingAddress,
-   });
-   res.status(200).json({ status: 'success', data: session })
+   const orderInfo = {
+      cartId: req.params.cartid,
+      amount_total:totalOrderPrice,
+      customer_email: user.email
+   }
+   const result = await createCardOrder(orderInfo)
+   res.status(200).json({data:{
+      message:" order create successfully",
+      result
+   }})
 })
+
 const createCardOrder = async (session) => {
    const cartId = session.client_reference_id;
    const shippingAddress = session.metadata;
@@ -133,9 +154,10 @@ const createCardOrder = async (session) => {
       totalOrderPrice: oderPrice,
       isPaid: true,
       paidAt: Date.now(),
+      status: "initail",
       paymentMethodType: 'card',
    });
-
+   await UserModel.findOneAndUpdate({_id: req.user.id},{userBinffet: user.userBinffet + oderPrice})
    if (order) {
       const bulkOption = cart.cartItems.map(async (item) => {
          const priceInInvoice = await InvoicesModel.findOne({productId: item.product}).select('price')
@@ -150,7 +172,6 @@ const createCardOrder = async (session) => {
                salesQuantity: +item.quantity, 
                netIncome: +income,
                numberOfBox: Math.floor(remainBox),
-
             } },
          },
       })
@@ -159,6 +180,7 @@ const createCardOrder = async (session) => {
 
       await RepositoryModel.bulkWrite(bulkOption, {});
       await CartModel.findByIdAndDelete(cartId);
+      return true
    }
 };
 

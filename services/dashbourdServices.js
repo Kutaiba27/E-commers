@@ -1,5 +1,6 @@
 import { RepositoryModel } from "../models/repoModel.js"
 import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
+import { UserModel } from "../models/userModel.js"
 import { Types } from 'mongoose'
 import axios from "axios"
 import asyncHandler from "express-async-handler";
@@ -8,24 +9,6 @@ import asyncHandler from "express-async-handler";
 
 export const uploudImageForInventory = uploadMulityImage([{name: "imageToInventory", maxCount:1}])
 
-export const hightSeles = asyncHandler(async (req,res)=>{
-   
-   const hightSelse = await RepositoryModel.aggregate([
-      { $group: {
-            _id:"$_id"
-         },
-      },
-      {
-         $sort: {
-            salesQuantity: -1
-         }
-      },
-      {
-         $limit: 1
-      }
-   ])
-   res.status(200).json({"hightSelse":hightSelse[0]})
-})
 
 export const numberOfProducts = asyncHandler(async (req,res)=>{
    const response = await axios.post('http://127.0.0.1:8000/upload-files/inventory-product',{imageToInventory:req.files[0]})
@@ -63,6 +46,69 @@ export const inventory = async(req,res)=>{
    ]);
    res.json(inventory)
 }
+
+export const mostPurchesesUser = asyncHandler(async (req, res)=>{
+   const users = await UserModel.aggregate([
+      {
+         $sort: {totalPurchases: -1}
+      },
+      {
+         $project: {
+            _id: 0,
+            name: 1,
+            email: 1,
+            totalPurchases: 1,
+         }
+      },
+      {
+         $limit: 3
+      }
+   ])
+   res.status(200).json({
+      data: users
+   })
+})
+
+
+export const topSellingProducts = asyncHandler(async(req,res)=>{
+   const products = await RepositoryModel.aggregate([
+      {
+         $sort: {salesQuantity: -1}
+      },
+      {
+         $lookup:{
+            from: "products",
+            localField: "productId",
+            foreignField: "_id",
+            pipeline:[
+               {
+                  $lookup:{
+                     from: "category",
+                     localField: "category",
+                     foreignField: "_id",
+                     as: "category"
+                  },
+               },
+               {
+                  $lookup:{
+                     from: "brand",
+                     localField: "brand",
+                     foreignField: "_id",
+                     as: "brand"
+                  },
+               },
+            ],
+            as: "productId"
+         }
+      },
+      {
+         $limit: 3
+      }
+   ])
+   res.status(200).josn({ 
+      data: products
+   })
+})
 
 export const byImage = async(req,res)=>{
    const frontBase64 = req.files.front[0].buffer.toString('base64');

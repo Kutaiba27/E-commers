@@ -54,7 +54,10 @@ const userSchema = new Schema({
          details: String,
          postalCode: String,
       }
-   ]
+   ],
+   totalPurchases:{
+      type: Number
+   }
 },{timeseries:true})
 
 userSchema.pre('save', async function(next){

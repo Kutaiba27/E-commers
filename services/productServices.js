@@ -7,7 +7,7 @@ import { uploadMulityImage } from '../middlewares/uploadImageMiddlewares.js'
 import { deleteItem, updateItem, getAll } from './handerFactory.js'
 import { ApiFeatures } from "../utility/apiFeatures.js";
 import { RepositoryModel } from "../models/repoModel.js";
-// import { sendImageToSift } from "../utility/sendToSift.js"
+import { sendImageToSift } from "../utility/sendToSift.js"
 
 export const resizingProductImage = asyncHandler( async (req, res, next)=>{
 
@@ -58,10 +58,10 @@ export const createProduct = async (req,res)=>{
    await product.save();
    product = await ProductModel.findById(product._id)
       .populate("repoInfo").populate("brand")
-   // const response = await sendImageToSift(req.files.boxImages, product._id)
-   // if(!response.data){
-   //    res.status(500).json({message:response.data})
-   // }
+   const response = await sendImageToSift(req.files.boxImages, product._id)
+   if(response.data){
+      return res.status(500).json({message:response.data})
+   }
    res.status(201).json({product})
 
 }
