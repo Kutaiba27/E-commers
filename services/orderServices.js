@@ -121,17 +121,19 @@ export const updatePayOrder = asyncHandler(async (req, res) => {
 // })
 export const checkoutSession = asyncHandler(async (req,res)=>{
       let shippingPrice = 0, taxPrice = 0;
+   
    const cart = await CartModel.findOne({ _id: req.params.cartId });
    if (!cart) {
       throw new ApiError(" there is no cart")
    }
    const user = await UserModel.findById(req.user.id)
-      const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
+   const cartPrice = cart.totalPriceAfterDiscount ? cart.totalPriceAfterDiscount : cart.totalPrice;
    const totalOrderPrice = cartPrice + shippingPrice + taxPrice;
    const orderInfo = {
-      cartId: req.params.cartid,
+      cartId: cart._id,
       amount_total:totalOrderPrice,
-      customer_email: user.email
+      customer_email: user.email,
+      customer_id: user._id
    }
    const result = await createCardOrder(orderInfo)
    res.status(200).json({data:{
@@ -141,10 +143,10 @@ export const checkoutSession = asyncHandler(async (req,res)=>{
 })
 
 const createCardOrder = async (session) => {
-   const cartId = session.client_reference_id;
+   
+   const cartId = session.cartId;
    const shippingAddress = session.metadata;
-   const oderPrice = session.amount_total / 100;
-
+   const oderPrice = session.amount_total ;
    const cart = await CartModel.findById(cartId);
    const user = await UserModel.findOne({ email: session.customer_email });
    const order = await OrderModel.create({
@@ -157,30 +159,32 @@ const createCardOrder = async (session) => {
       status: "initail",
       paymentMethodType: 'card',
    });
-   await UserModel.findOneAndUpdate({_id: req.user.id},{userBinffet: user.userBinffet + oderPrice})
+   await UserModel.findOneAndUpdate({_id: session.customer_id},{totalPurchases: user.totalPurchases + oderPrice})
+   console.log(cart)
    if (order) {
-      const bulkOption = cart.cartItems.map(async (item) => {
-         const priceInInvoice = await InvoicesModel.findOne({productId: item.product}).select('price')
-         const income = item.price - priceInInvoice.price
-         const product = await RepositoryModel.findById(item.product)
-         const remainBox = (product.currantQuantity - item.quantity)/ product.productInBox
-         return ({
-         updateOne: {
-            filter: { _id: item.product },
-            update: { $inc: { 
-               currantQuantity: product.currantQuantity - item.quantity, 
-               salesQuantity: +item.quantity, 
-               netIncome: +income,
-               numberOfBox: Math.floor(remainBox),
-            } },
-         },
-      })
-   }
-   );
-
+      const bulkOptionPromises = cart.cartItems.map(async (item) => {
+         const priceInInvoice = await InvoicesModel.findOne({productId: item.product}).select('price');
+         const income = item.price - priceInInvoice.price;
+         const product = await RepositoryModel.findOne({productId:item.product});
+         const remainBox = (product.currantQuantity - item.quantity) / product.productInBox;
+         return {
+            updateOne: {
+               filter: { productId: item.product },
+               update: { 
+                     currantQuantity: product.currantQuantity-item.quantity, 
+                     salesQuantity: product.salesQuantity+item.quantity, 
+                     netIncome: income,
+                     numberOfBox: product.numberOfBox - Math.floor(remainBox),
+               },
+            },
+         };
+      });
+      
+      const bulkOption = await Promise.all(bulkOptionPromises);
+      console.log(bulkOption)
       await RepositoryModel.bulkWrite(bulkOption, {});
       await CartModel.findByIdAndDelete(cartId);
-      return true
+      return {order: order, result: true};
    }
 };
 

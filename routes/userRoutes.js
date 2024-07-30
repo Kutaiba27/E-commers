@@ -14,7 +14,7 @@ import {
 
 import {
    createUserValidator,
-   deleteUserValidator,
+   // deleteUserValidator,
    getUserValidator,
    updateUserValidator,
    changUserPasswordValidator
@@ -29,7 +29,7 @@ router.put('/changePassword/:id',changUserPasswordValidator,changePassword)
 router.route('/')
    .get(
       protect,
-      allowTo("admin","maneger"),
+      allowTo("admin","maneger","user"),
       getUsers
       )
    .post(

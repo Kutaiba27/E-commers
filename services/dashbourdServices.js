@@ -105,7 +105,7 @@ export const topSellingProducts = asyncHandler(async(req,res)=>{
          $limit: 3
       }
    ])
-   res.status(200).josn({ 
+   res.status(200).json({ 
       data: products
    })
 })

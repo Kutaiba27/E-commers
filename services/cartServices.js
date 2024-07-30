@@ -30,12 +30,10 @@ export const addProductToCart = asyncHandler(async (req, res)=>{
    const prodRepo = await RepositoryModel.findOne({productId: product._id})
    let cart = await CartModel.findOne({user: req.user._id})
    if(!cart){
-      console.log("hello ")
       cart = await CartModel.create({
-         cartItems: [{product: product._id, color: color, price:prodRepo.price}],
+         cartItems: [{product: product._id, color: color, price:prodRepo.price, quantity:req.body.quantity}],
          user: req.user._id
       })
-      // cart.cartItems.push({product: product._id, color: color, price:product.price})
    }else {
       const productIndex = cart.cartItems.findIndex((item)=> item.product.toString() == productId && item.color.toString() == color)
       if( productIndex >= 0 ){

@@ -58,10 +58,10 @@ export const createProduct = async (req,res)=>{
    await product.save();
    product = await ProductModel.findById(product._id)
       .populate("repoInfo").populate("brand")
-   const response = await sendImageToSift(req.files.boxImages, product._id)
-   if(response.data){
-      return res.status(500).json({message:response.data})
-   }
+   // const response = await sendImageToSift(req.files.boxImages, product._id)
+   // if(response.data){
+   //    return res.status(500).json({message:response.data})
+   // }
    res.status(201).json({product})
 
 }
